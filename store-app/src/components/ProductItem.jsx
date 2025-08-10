@@ -1,7 +1,21 @@
-import { Grid, Paper, Typography } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Grid,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
 import React from "react";
+import ReportIcon from "@mui/icons-material/Report";
+import { currencyTRY } from "../utils/format";
 
-export default function ProductItem({ product }) {
+export default function ProductItem({
+  product,
+  handleAddItem,
+  cartItem,
+  isAdding,
+}) {
   return (
     <Grid container spacing={2}>
       <Grid size={{ lg: 4, md: 5, sm: 6, xs: 12 }}>
@@ -18,6 +32,35 @@ export default function ProductItem({ product }) {
             {product.title}
           </Typography>
           <Typography variant="body1">{product.description}</Typography>
+          <Typography variant="h4" color="secondary" sx={{ mt: 3 }}>
+            {currencyTRY.format(product.price)}
+          </Typography>
+          <Stack
+            direction="row"
+            display="flex"
+            alignItems="center"
+            sx={{ mt: 3 }}
+            gap={2}
+          >
+            <Button
+              onClick={() => handleAddItem(product.id)}
+              variant="contained"
+              color="secondary"
+            >
+              Sepete Ekle
+            </Button>
+
+            <ReportIcon color="secondary" />
+            {cartItem?.product.quantity > 0 && (
+              <Typography
+                variant="body2"
+                sx={{ display: "flex", alignItems: "center" }}
+              >
+                Sepetinizde {cartItem.product.quantity} adet bulunmaktadır.
+              </Typography>
+            )}
+            {isAdding && <CircularProgress size="20px" />}
+          </Stack>
         </Paper>
       </Grid>
     </Grid>

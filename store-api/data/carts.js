@@ -86,19 +86,57 @@ async function replace(id, cart) {
   await writeData(data);
 }
 
+// async function cartToDTO(cart) {
+//   const data = await readData();
+
+//   let items = cart.cartItems.map((item) => ({
+//     id: item.id,
+//     product: {
+//       productId: item.productId,
+//       quantity: item.quantity,
+//       title: data.products.find((p) => p.id === item.productId).title,
+//       price: data.products.find((p) => p.id === item.productId).price,
+//       image: data.products.find((p) => p.id === item.productId).image,
+//     },
+//   }));
+
+//   cart.cartItems = items;
+//   return cart;
+// }
+
 async function cartToDTO(cart) {
   const data = await readData();
 
-  let items = cart.cartItems.map((item) => ({
-    id: item.id,
-    product: {
-      productId: item.productId,
-      quantity: item.quantity,
-      title: data.products.find((p) => p.id === item.productId).title,
-      price: data.products.find((p) => p.id === item.productId).price,
-      image: data.products.find((p) => p.id === item.productId).image,
-    },
-  }));
+  let items = cart.cartItems.map((item) => {
+    // Ürünü bul
+    const product = data.products.find((p) => p.id === item.productId);
+
+    // Eğer ürün bulunamazsa, undefined hatası vermemek için boş veya varsayılan bir nesne dön.
+    if (!product) {
+      return {
+        id: item.id,
+        product: {
+          productId: item.productId,
+          quantity: item.quantity,
+          title: "Ürün Bulunamadı", // Varsayılan bir değer ver
+          price: 0,
+          image: "",
+        },
+      };
+    }
+
+    // Ürün bulunduysa, verileri güvenle kullan
+    return {
+      id: item.id,
+      product: {
+        productId: item.productId,
+        quantity: item.quantity,
+        title: product.title,
+        price: product.price,
+        image: product.image,
+      },
+    };
+  });
 
   cart.cartItems = items;
   return cart;

@@ -8,18 +8,25 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Button from "@mui/material/Button";
 import { Link, NavLink } from "react-router";
 import Badge from "@mui/material/Badge";
+import { useCartContext } from "../context/CartContext";
+
+const links = [
+  { title: "Home", to: "/" },
+  { title: "Products", to: "/products" },
+  { title: "Error", to: "/errors" },
+];
+
+const authLinks = [
+  { title: "Login", to: "/login" },
+  { title: "Register", to: "/register" },
+];
 
 export default function Navbar() {
-  const links = [
-    { title: "Home", to: "/" },
-    { title: "Products", to: "/products" },
-    { title: "Error", to: "/errors" },
-  ];
-
-  const authLinks = [
-    { title: "Login", to: "/login" },
-    { title: "Register", to: "/register" },
-  ];
+  const { cart } = useCartContext();
+  const itemCount = cart?.cartItems.reduce(
+    (total, item) => total + item.product.quantity,
+    0
+  );
   return (
     <AppBar position="static" sx={{ backgroundColor: "primary.dark" }}>
       <Toolbar>
@@ -47,7 +54,7 @@ export default function Navbar() {
             size="large"
             edge="start"
           >
-            <Badge badgeContent="2" color="secondary">
+            <Badge badgeContent={itemCount} color="secondary">
               <ShoppingCartIcon />
             </Badge>
           </IconButton>
